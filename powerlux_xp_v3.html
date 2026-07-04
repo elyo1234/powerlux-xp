@@ -794,13 +794,19 @@ function setVotedFlag() {
 
 async function getVotes() {
   try {
-    const r = await window.storage.get(POLL_STORAGE_KEY, true);
-    return r ? JSON.parse(r.value) : {Power:0,Chloe:0,'P.X':0,Box:0,Soulless:0};
+    const res = await fetch('https://sistema-de-votos-personaje-fav-default-rtdb.firebaseio.com/votes.json');
+    const data = await res.json();
+    return data || {Power:0,Chloe:0,'P.X':0,Box:0,Soulless:0};
   } catch(e) { return {Power:0,Chloe:0,'P.X':0,Box:0,Soulless:0}; }
 }
 
 async function saveVotes(votes) {
-  try { await window.storage.set(POLL_STORAGE_KEY, JSON.stringify(votes), true); } catch(e) {}
+  try {
+    await fetch('https://sistema-de-votos-personaje-fav-default-rtdb.firebaseio.com/votes.json', {
+      method: 'PUT',
+      body: JSON.stringify(votes)
+    });
+  } catch(e) {}
 }
 
 function openPoll() {
